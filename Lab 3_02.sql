@@ -173,30 +173,30 @@ SELECT
 FROM
     film
 WHERE
-    film_id IN (SELECT 
+    film_id IN (SELECT -- all the movies, rented by the most prolific customer
             film_id
         FROM
             inventory
         WHERE
-            inventory_id IN (SELECT 
+            inventory_id IN (SELECT -- all the inventory_ids of the rental_ids by the most prolific customer
                     inventory_id
                 FROM
                     rental
                 WHERE
-                    rental_id IN (SELECT 
+                    rental_id IN (SELECT -- all the rental_ids did by the most prolific customer (526)
                             rental_id
                         FROM
                             rental
                         WHERE
-                            customer_id = (SELECT 
+                            customer_id IN (SELECT -- most prolific customer (526)
                                     customer_id
                                 FROM
                                     (SELECT 
-                                        customer_id, SUM(DISTINCT amount)
+                                        customer_id, SUM(amount)
                                     FROM
                                         payment
                                     GROUP BY customer_id
-                                    ORDER BY customer_id DESC
+                                    ORDER BY SUM(amount) DESC
                                     LIMIT 1) sub1))))
 ORDER BY film_id;
 
